@@ -1,0 +1,149 @@
+class ExploreOptionsPage extends StatefulWidget {
+  const ExploreOptionsPage({super.key});
+
+  @override
+  State<ExploreOptionsPage> createState() => _ExploreOptionsPageState();
+}
+
+class _ExploreOptionsPageState extends State<ExploreOptionsPage> {
+  String _selectedCity = 'Amman';
+  
+  final Map<String, double> cityPrices = {
+    'Amman': 25901.0,
+    'Irbid': 18000.0,
+    'Aqaba': 22000.0,
+    'Zarqa': 15000.0,
+  };
+
+  final Map<String, List<String>> cityImages = {
+    'Amman': [
+      'https://images.unsplash.com/photo-1570129477492-45c003edd2be',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c',
+    ],
+    'Irbid': [
+      'https://images.unsplash.com/photo-1568605114967-8130f3a36994',
+      'https://images.unsplash.com/photo-1572120360610-d971b9b78827',
+    ],
+    'Aqaba': [
+      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914',
+      'https://images.unsplash.com/photo-1599423300746-b62533397364',
+    ],
+    'Zarqa': [
+      'https://images.unsplash.com/photo-1523217582562-09d0def993a6',
+      'https://images.unsplash.com/photo-1551218808-94e220e084d2',
+    ],
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Explore Options'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Explore Options',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.brown,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Graph Card
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade100,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${cityPrices[_selectedCity]?.toStringAsFixed(1)}',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  DropdownButton<String>(
+                    value: _selectedCity,
+                    items: cityPrices.keys.map((city) {
+                      return DropdownMenuItem(
+                        value: city,
+                        child: Text(city),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCity = value!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Properties Grid
+            GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: cityImages[_selectedCity]!.map((imageUrl) {
+                return _buildPropertyCard(imageUrl, _selectedCity);
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPropertyCard(String imageUrl, String city) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Stack(
+        children: [
+          Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.black.withOpacity(0.5),
+              child: Row(
+                children: [
+                  const Icon(Icons.location_on, color: Colors.white, size: 16),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      city,
+                      style: const TextStyle(color: Colors.white),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

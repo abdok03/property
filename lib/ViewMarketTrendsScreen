@@ -1,0 +1,143 @@
+class ViewMarketTrendsScreen extends StatelessWidget {
+   ViewMarketTrendsScreen({Key? key}) : super(key: key);
+
+  // بيانات المبيعات لكل شهر (مثال)
+  final List<double> monthlySales = [
+    10, 12, 15, 14, 18, 20, 23, 25
+  ]; 
+
+  String getMarketPrediction() {
+    double growthRate = (monthlySales.last - monthlySales.first) / monthlySales.first;
+    if (growthRate > 0.2) {
+      return "AI Prediction: Market is growing fast, expect a 10-15% price increase.";
+    } else if (growthRate > 0.05) {
+      return "AI Prediction: Moderate growth, 3-5% expected rise in prices.";
+    } else {
+      return "AI Prediction: Market is stable, no major changes expected.";
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text('Market trends', style: TextStyle(color: Colors.black)),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'View Market Trends',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: BarChart(
+                BarChartData(
+                  barGroups: _getBarGroups(),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: true),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
+                          return SideTitleWidget(
+                            
+                            child: Text(months[value.toInt()], style: const TextStyle(fontSize: 12)),
+                            meta:meta,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(show: false),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Overview',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildStatBox('Income', '20,000,000', Colors.green),
+                _buildStatBox('Expenses', '5,000,000', Colors.red),
+              ],
+            ),
+            const SizedBox(height: 20),
+            // هنا تحليل الذكاء الصناعي
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.insights, color: Colors.blue),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      getMarketPrediction(),
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<BarChartGroupData> _getBarGroups() {
+    return List.generate(monthlySales.length, (index) {
+      return BarChartGroupData(
+        x: index,
+        barRods: [
+          BarChartRodData(
+            toY: monthlySales[index],
+            color: Colors.brown,
+            width: 15,
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget _buildStatBox(String title, String value, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(color: Colors.grey.withOpacity(0.2), spreadRadius: 1, blurRadius: 3),
+        ],
+      ),
+      child: Column(
+        children: [
+          Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 5),
+          Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color)),
+        ],
+      ),
+    );
+  }
+}

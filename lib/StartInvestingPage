@@ -1,0 +1,153 @@
+
+class StartInvestingPage extends StatefulWidget {
+  const StartInvestingPage({super.key});
+
+  @override
+  State<StartInvestingPage> createState() => _StartInvestingPageState();
+}
+
+class _StartInvestingPageState extends State<StartInvestingPage> {
+  double _investmentAmount = 50000;
+  String _selectedType = 'Residential';
+
+  final List<String> _propertyTypes = [
+    'Residential',
+    'Commercial',
+    'Land',
+    'Industrial'
+  ];
+
+  String getRecommendation() {
+    if (_investmentAmount < 50000) {
+      return "We recommend starting with Residential properties.";
+    } else if (_investmentAmount < 200000) {
+      return "Consider Commercial or Residential investments.";
+    } else if (_investmentAmount < 500000) {
+      return "Land investments might offer long-term value.";
+    } else {
+      return "Explore Industrial projects for higher returns.";
+    }
+  }
+
+  String getRiskLevel() {
+    if (_investmentAmount < 50000) {
+      return "Low Risk";
+    } else if (_investmentAmount < 200000) {
+      return "Moderate Risk";
+    } else if (_investmentAmount < 500000) {
+      return "High Risk";
+    } else {
+      return "Very High Risk";
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Start Investing")),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.network(
+              'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+              height: 100,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Customize Your Investment",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "Choose your preferences to start investing in the best property options available.",
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30),
+
+            const Text("Select Investment Amount"),
+            Text("\$${_investmentAmount.toInt()}",
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            Slider(
+              value: _investmentAmount,
+              min: 10000,
+              max: 1000000,
+              divisions: 99,
+              label: _investmentAmount.toInt().toString(),
+              onChanged: (value) {
+                setState(() {
+                  _investmentAmount = value;
+                });
+              },
+            ),
+
+            const SizedBox(height: 20),
+
+            const Text("Select Property Type"),
+            const SizedBox(height: 10),
+            DropdownButton<String>(
+              value: _selectedType,
+              onChanged: (value) {
+                setState(() {
+                  _selectedType = value!;
+                });
+              },
+              items: _propertyTypes.map((type) {
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(type),
+                );
+              }).toList(),
+            ),
+
+            const SizedBox(height: 20),
+
+            const Text(
+              "AI Recommendation:",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              getRecommendation(),
+              style: TextStyle(color: Colors.green.shade700),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 10),
+
+            const Text(
+              "Risk Level:",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              getRiskLevel(),
+              style: const TextStyle(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+
+            const Spacer(),
+
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        "Investing \$${_investmentAmount.toInt()} in $_selectedType property."),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.brown,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+              ),
+              child: const Text("Start Now", style: TextStyle(fontSize: 16)),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

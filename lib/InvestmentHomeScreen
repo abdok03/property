@@ -1,0 +1,206 @@
+class InvestmentHomeScreen extends StatefulWidget {
+  const InvestmentHomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<InvestmentHomeScreen> createState() => _InvestmentHomeScreenState();
+}
+
+class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
+  RangeValues _currentRangeValues = const RangeValues(150000, 250000);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {},
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'invest in the future of real estate',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.network(
+                    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914',
+                    width: double.infinity,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        ' Discover opportunities',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        ' tailored to your needs',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'property price ',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 10),
+            RangeSlider(
+              values: _currentRangeValues,
+              min: 100000,
+              max: 300000,
+              divisions: 10,
+              activeColor: Colors.brown,
+              inactiveColor: Colors.brown.withOpacity(0.2),
+              labels: RangeLabels(
+                '${_currentRangeValues.start.round()}',
+                '${_currentRangeValues.end.round()}',
+              ),
+              onChanged: (RangeValues values) {
+                setState(() {
+                  _currentRangeValues = values;
+                });
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildPriceBox(_currentRangeValues.start),
+                _buildPriceBox(_currentRangeValues.end),
+              ],
+            ),
+            const SizedBox(height: 30),
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 1.5,
+              children: [
+                _buildOptionButton(
+                  'explore options',
+                  Icons.search_outlined,
+                  Colors.blue.shade200,
+                  () {
+                    Navigator.pushNamed(context, '/explore');
+                  },
+                ),
+                _buildOptionButton(
+                  'view market trends',
+                  Icons.trending_up,
+                  Colors.grey.shade200,
+                  () {
+                    Navigator.pushNamed(context, '/market');
+                  },
+                ),
+                _buildOptionButton(
+                  'start investing',
+                  Icons.home_outlined,
+                  Colors.amber.shade100,
+                  () {
+                    Navigator.pushNamed(context, '/invest');
+                  },
+                ),
+                _buildOptionButton(
+                  ' contact us',
+                  Icons.phone,
+                  Colors.blue.shade100,
+                  () {
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionButton(String title, IconData iconData, Color bgColor, VoidCallback onPressed) {
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withAlpha(50),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: bgColor,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(iconData, color: Colors.black54),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPriceBox(double price) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.brown,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Text(
+        '\$${price.round()}',
+        style: const TextStyle(color: Colors.white),
+      ),
+    );
+  }
+}
